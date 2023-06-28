@@ -25,22 +25,6 @@ forestPlotMatrix <- function(data, threshold) {
   return(data)
 }
 
-#z_score <- function(x){
-  
-#  return((x-mean(x, na.rm=T))/sd(x, na.rm=T))
-  
-#}
-
-alleleMatch <- function(baseTable){
-  for (i in 1:nrow(baseTable)) {
-    if(baseTable$`T2D risk increasing allele`[i] != baseTable$ea[i])
-    {
-      baseTable$beta[i] <-  -(baseTable$beta[i])
-      baseTable$ea[i] <- baseTable$`T2D risk increasing allele`[i]
-    }
-  }
-  return(baseTable)
-}
 
 generatePlot <- function(data) {
   
@@ -59,54 +43,10 @@ generatePlot <- function(data) {
         axis.title.x = element_text(size = 9), 
         axis.text.x = element_text(size = 8), 
         legend.position = "none")  +
-  xlab("Change in BW Z score per fetal T2D risk allele")
+  xlab("Insert_plot_title")
 
 }
 
-data <- as.data.frame(readxl::read_xlsx('/Users/bg384/Desktop/forest_Plot_update.xlsx'))
-threshold <- 0.832
-data <- forestPlotMatrix(data, threshold)
-#table(data$AboveThreshold)
-
-#ncol(data)
-#str(data)
-
-bwGwasSummary <- fread('/Users/bg384/Downloads/Fetal_Effect_European_meta_NG2019.txt.gz')
-
-bwGwasSummary <- as.data.frame(bwGwasSummary)
-
-joint_clust_bw <- inner_join(data, 
-                             bwGwasSummary, 
-                             join_by(x$"rsID" == y$"RSID"), 
-                             multiple = "all")
-
-joint_clust_bw$ea <- toupper(joint_clust_bw$ea)
-
-#table(joint_clust_bw$locus)
-
-
-
-joinData <- joint_clust_bw
-joinData <- alleleMatch(joinData)
-
-#joinData$`T2D risk increasing allele` == joinData$ea
-
-#names(joinData)
-
-joinData <- select(joinData, 
-                   rsID, 
-                   locus,
-                   "cluster" = AboveThreshold, 
-                   'risk_allele' = "T2D risk increasing allele",
-                   beta, 
-                   p, 
-                   se)
-
-
-table(joinData$cluster)
-
-dat2 <- joinData %>% arrange(cluster)
-
 png("test_f.png", width = 4, height = 8, units = 'in', res = 800)
-generatePlot(dat2[dat2$cluster %in% c("Obesity"),])
+generatePlot(data)
 dev.off()
