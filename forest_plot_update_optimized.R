@@ -22,7 +22,7 @@ forestPlotMatrix <- function(data, threshold) {
   data <- separate_rows(data, AboveThreshold, sep = ",")
   
   # Return the modified data frame
-  return(data)
+  return(data   )
 }
 
 
